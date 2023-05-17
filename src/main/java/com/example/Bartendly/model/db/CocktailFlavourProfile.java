@@ -1,5 +1,7 @@
-package com.example.Bartendly.model;
+package com.example.Bartendly.model.db;
 
+import com.example.Bartendly.model.Cocktail;
+import com.example.Bartendly.model.FlavourProfile;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,12 +13,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NonAlcoholicIngredient {
+public class CocktailFlavourProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "cocktail_id")
+    private Cocktail cocktail;
     @Enumerated(EnumType.STRING)
-    private NonAlcoholicType type;
-
+    private FlavourProfile flavourProfile;
 }

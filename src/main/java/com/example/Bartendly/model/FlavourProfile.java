@@ -1,11 +1,13 @@
 package com.example.Bartendly.model;
 
-public class FlavourProfile {
-    private Long id;
-    private boolean sweet;
-    private boolean sour;
-    private boolean bitter;
-    private boolean spicy;
-    private boolean dry;
-    private boolean fruity;
+
+
+
+public enum FlavourProfile {
+    SWEET,
+    SOUR,
+    BITTER,
+    SPICY,
+    DRY,
+    FRUITY
 }

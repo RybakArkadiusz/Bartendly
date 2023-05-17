@@ -11,12 +11,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NonAlcoholicIngredient {
+public class Cocktail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     @Enumerated(EnumType.STRING)
-    private NonAlcoholicType type;
+    private PreparationMethod prepMethod;
+    private String recipe;
+
 
 }
