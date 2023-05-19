@@ -9,7 +9,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface CocktailNonAlcoholicIngredientRepository extends JpaRepository {
+public interface CocktailNonAlcoholicIngredientRepository extends JpaRepository<CocktailNonAlcoholicIngredient, Long> {
     List<CocktailNonAlcoholicIngredient> findByNonAlcoholicIngredient(NonAlcoholicIngredient nonAlcoholicIngredient);
     List<CocktailNonAlcoholicIngredient> findByCocktail(Cocktail cocktail);
+    List<CocktailNonAlcoholicIngredient> deleteByCocktail(Cocktail cocktail);
+
 }

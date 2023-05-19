@@ -1,7 +1,9 @@
 package com.example.Bartendly.model.service;
 
 import com.example.Bartendly.model.*;
+import com.example.Bartendly.model.DTO.AlcoholInCocktailDTO;
 import com.example.Bartendly.model.DTO.CocktailDTO;
+import com.example.Bartendly.model.DTO.NonAlcoholicIngredientInCocktailDTO;
 import com.example.Bartendly.model.db.CocktailAlcohol;
 import com.example.Bartendly.model.db.CocktailFlavourProfile;
 import com.example.Bartendly.model.db.CocktailNonAlcoholicIngredient;
@@ -31,8 +33,6 @@ public class CocktailService {
 
         List<Cocktail> cocktails = cocktailRepository.findCocktailsByCriteria(alcoholIds, alcoholIds.size(), flavourNames, flavourNames.size(), nonAlcoholicIngredientIds, nonAlcoholicIngredientIds.size(), method.name());
 
-
-
         return cocktails.stream()
                 .map(this::createCocktailDTO)
                 .collect(Collectors.toList());
@@ -51,25 +51,126 @@ public class CocktailService {
         if(cocktail.isPresent()){
             return createCocktailDTO(cocktail.get());
         }else{
-            throw new EntityNotFoundException("Cocktail with id: "+ id + "not found!");
+            throw new EntityNotFoundException("Cocktail with id: "+ id + " not found");
         }
     }
 
+    public CocktailDTO create(CocktailDTO cocktailDTO) { //using for cause streams too complicated
+        //creating new Cocktail
+        Cocktail cocktail = new Cocktail();
+        cocktail.setName(cocktailDTO.name());
+        cocktail.setPrepMethod(cocktailDTO.preparationMethod());
+        cocktail.setRecipe(cocktailDTO.recipe());
 
+        Cocktail savedCocktail = cocktailRepository.save(cocktail);
 
+        //adding alcohols to cocktail
+        for(AlcoholInCocktailDTO aic : cocktailDTO.alcoholIngredients()) {
+            CocktailAlcohol cocktailAlcohol = new CocktailAlcohol();
+            cocktailAlcohol.setCocktail(savedCocktail);
+            cocktailAlcohol.setAlcohol(alcoholRepository.findById(aic.alcohol().getId())
+                    .orElseThrow(() ->new EntityNotFoundException("Alcohol with id: "+ aic.alcohol().getId() + " not found")));
+            cocktailAlcohol.setQuantity(aic.quantity());
+            cocktailAlcohol.setMeasurementUnit(aic.measurementUnit());
 
+            cocktailAlcoholRepository.save(cocktailAlcohol);
+        }
+
+        //adding non-alcoholic ingredients to cocktail
+        for(NonAlcoholicIngredientInCocktailDTO nai : cocktailDTO.nonAlcoholicIngredients()) {
+            CocktailNonAlcoholicIngredient nonAlcoholic = new CocktailNonAlcoholicIngredient();
+            nonAlcoholic.setCocktail(savedCocktail);
+            nonAlcoholic.setNonAlcoholicIngredient(nonAlcoholicIngredientRepository.findById(nai.nonAlcoholicIngredient().getId())
+                    .orElseThrow(() ->new EntityNotFoundException("non-alcoholic ingredient with id: "+ nai.nonAlcoholicIngredient().getId() + " not found")));
+            nonAlcoholic.setQuantity(nai.quantity());
+            nonAlcoholic.setMeasurementUnit(nai.measurementUnit());
+
+            cocktailNonAlcoholicIngredientRepository.save(nonAlcoholic);
+        }
+
+        //adding taste profiles
+        for(FlavourProfile flavour : cocktailDTO.flavourProfiles()) {
+            CocktailFlavourProfile cfp = new CocktailFlavourProfile();
+            cfp.setCocktail(savedCocktail);
+            cfp.setFlavourProfile(flavour);
+
+            cocktailFlavourProfileRepository.save(cfp);
+        }
+
+        return createCocktailDTO(savedCocktail);
+    }
+
+    public CocktailDTO update(Long id, CocktailDTO cocktailDTO) {
+        Cocktail cocktail = cocktailRepository.findById(id)
+                .orElseThrow(()->new EntityNotFoundException("Coctail with id: "+id+" not found"));
+
+        cocktail.setName(cocktailDTO.name());
+        cocktail.setPrepMethod(cocktailDTO.preparationMethod());
+        cocktail.setRecipe(cocktailDTO.recipe());
+
+        cocktailAlcoholRepository.deleteByCocktail(cocktail);
+        cocktailNonAlcoholicIngredientRepository.deleteByCocktail(cocktail);
+        cocktailFlavourProfileRepository.deleteByCocktail(cocktail);
+
+        //adding alcohols to coctail
+        for(AlcoholInCocktailDTO aic : cocktailDTO.alcoholIngredients()) {
+            CocktailAlcohol cocktailAlcohol = new CocktailAlcohol();
+            cocktailAlcohol.setCocktail(cocktail);
+            cocktailAlcohol.setAlcohol(alcoholRepository.findById(aic.alcohol().getId())
+                    .orElseThrow(() ->new EntityNotFoundException("Alcohol with id: "+ aic.alcohol().getId() + " not found")));
+            cocktailAlcohol.setQuantity(aic.quantity());
+            cocktailAlcohol.setMeasurementUnit(aic.measurementUnit());
+
+            cocktailAlcoholRepository.save(cocktailAlcohol);
+        }
+
+        //adding non-alcoholic ingredients to cocktail
+        for(NonAlcoholicIngredientInCocktailDTO nai : cocktailDTO.nonAlcoholicIngredients()) {
+            CocktailNonAlcoholicIngredient nonAlcoholic = new CocktailNonAlcoholicIngredient();
+            nonAlcoholic.setCocktail(cocktail);
+            nonAlcoholic.setNonAlcoholicIngredient(nonAlcoholicIngredientRepository.findById(nai.nonAlcoholicIngredient().getId())
+                    .orElseThrow(() ->new EntityNotFoundException("non-alcoholic ingredient with id: "+ nai.nonAlcoholicIngredient().getId() + " not found")));
+            nonAlcoholic.setQuantity(nai.quantity());
+            nonAlcoholic.setMeasurementUnit(nai.measurementUnit());
+
+            cocktailNonAlcoholicIngredientRepository.save(nonAlcoholic);
+        }
+
+        //adding taste profiles
+        for(FlavourProfile flavour : cocktailDTO.flavourProfiles()) {
+            CocktailFlavourProfile cfp = new CocktailFlavourProfile();
+            cfp.setCocktail(cocktail);
+            cfp.setFlavourProfile(flavour);
+
+            cocktailFlavourProfileRepository.save(cfp);
+        }
+
+        cocktailRepository.save(cocktail);
+        return createCocktailDTO(cocktail);
+    }
+
+    public void delete(Long id) {
+        Cocktail cocktail = cocktailRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Cocktail with id: " + id + " not found"));
+
+        cocktailAlcoholRepository.deleteByCocktail(cocktail);
+        cocktailNonAlcoholicIngredientRepository.deleteByCocktail(cocktail);
+        cocktailFlavourProfileRepository.deleteByCocktail(cocktail);
+
+        cocktailRepository.delete(cocktail);
+    }
 
 
     private CocktailDTO createCocktailDTO(Cocktail cocktail) {
 
-        List<Alcohol> alcohols = cocktailAlcoholRepository.findByCocktail(cocktail)
+        List<AlcoholInCocktailDTO> alcohols = cocktailAlcoholRepository.findByCocktail(cocktail)
                 .stream()
-                .map(CocktailAlcohol::getAlcohol)
+                .map(ca -> new AlcoholInCocktailDTO(ca.getAlcohol(), ca.getQuantity(), ca.getMeasurementUnit()))
                 .collect(Collectors.toList());
 
-        List<NonAlcoholicIngredient> nonAlcoholicIngredients = cocktailNonAlcoholicIngredientRepository.findByCocktail(cocktail)
+        List<NonAlcoholicIngredientInCocktailDTO> nonAlcoholicIngredients = cocktailNonAlcoholicIngredientRepository.findByCocktail(cocktail)
                 .stream()
-                .map(CocktailNonAlcoholicIngredient::getNonAlcoholicIngredient)
+                .map(cna -> new NonAlcoholicIngredientInCocktailDTO(cna.getNonAlcoholicIngredient(), cna.getQuantity(), cna.getMeasurementUnit()))
                 .collect(Collectors.toList());
 
         List<FlavourProfile> flavourProfiles = cocktailFlavourProfileRepository.findByCocktail(cocktail)
@@ -81,12 +182,4 @@ public class CocktailService {
                 alcohols, nonAlcoholicIngredients, flavourProfiles);
     }
 
-//    private Cocktail convertToEntity(CocktailDTO cocktailDTO){
-//        Cocktail cocktail = new Cocktail(cocktailDTO.id(),cocktailDTO.name(),cocktailDTO.preparationMethod(),cocktailDTO.recipe());
-//        cocktailRepository.save(cocktail);
-//        cocktailDTO.alcohols().stream()
-//                .map(alcohol->{
-//                    cocktailAlcoholRepository.save(new CocktailAlcohol(cocktail,alcohol))
-//                })
-//    }
 }

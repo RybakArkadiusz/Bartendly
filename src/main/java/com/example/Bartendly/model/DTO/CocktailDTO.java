@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public record CocktailDTO(Long id, String name, PreparationMethod preparationMethod, String recipe,
-                          List<Alcohol> alcohols, List<NonAlcoholicIngredient> nonAlcoholicIngredients,
+                          List<AlcoholInCocktailDTO> alcoholIngredients, List<NonAlcoholicIngredientInCocktailDTO> nonAlcoholicIngredients,
                           List<FlavourProfile> flavourProfiles) {
 
 }

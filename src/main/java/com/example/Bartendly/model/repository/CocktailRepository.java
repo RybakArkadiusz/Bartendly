@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 @Repository
-public interface CocktailRepository extends JpaRepository {
+public interface CocktailRepository extends JpaRepository<Cocktail, Long> {
     List<Cocktail> findByPreparationMethod(PreparationMethod preparationMethod);
     @Query(value = "SELECT c FROM Cocktail c WHERE " +
             "EXISTS (SELECT 1 FROM CocktailAlcohol ca WHERE ca.cocktail.id = c.id AND ca.alcohol.id IN :alcoholIds GROUP BY ca.cocktail.id HAVING COUNT(ca.cocktail.id) = :numberOfAlcohols) " +
