@@ -17,7 +17,7 @@ public class Cocktail {
     private Long id;
     private String name;
     @Enumerated(EnumType.STRING)
-    private PreparationMethod prepMethod;
+    private PreparationMethod preparationMethod;
     private String recipe;
 
 

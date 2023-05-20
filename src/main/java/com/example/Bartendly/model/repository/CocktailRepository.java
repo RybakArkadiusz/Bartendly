@@ -13,9 +13,9 @@ public interface CocktailRepository extends JpaRepository<Cocktail, Long> {
     List<Cocktail> findByPreparationMethod(PreparationMethod preparationMethod);
     @Query(value = "SELECT c FROM Cocktail c WHERE " +
             "EXISTS (SELECT 1 FROM CocktailAlcohol ca WHERE ca.cocktail.id = c.id AND ca.alcohol.id IN :alcoholIds GROUP BY ca.cocktail.id HAVING COUNT(ca.cocktail.id) = :numberOfAlcohols) " +
-            "AND EXISTS (SELECT 1 FROM CocktailFlavourProfile cf WHERE cf.cocktail.id = c.id AND cf.flavourProfile IN :flavourIds GROUP BY cf.cocktail.id HAVING COUNTCOUNT(cf.cocktail.id) = :numberOfFlavours) " +
+            "AND EXISTS (SELECT 1 FROM CocktailFlavourProfile cf WHERE cf.cocktail.id = c.id AND cf.flavourProfile IN :flavourNames GROUP BY cf.cocktail.id HAVING COUNTCOUNT(cf.cocktail.id) = :numberOfFlavours) " +
             "AND EXISTS (SELECT 1 FROM CocktailNonAlcoholicIngredient cna WHERE cna.cocktail.id = c.id AND cna.nonAlcoholicIngredient.id IN :ingredientIds GROUP BY cna.cocktail.id HAVING COUNTCOUNT(cna.cocktail.id) = :numberOfIngredients) " +
-            "AND c.prepMethod = :preparationMethod")
+            "AND c.preparationMethod = :preparationMethod")
     List<Cocktail> findCocktailsByCriteria(
             @Param("alcoholIds") List<Long> alcoholIds,
             @Param("numberOfAlcohols") int numberOfAlcohols,

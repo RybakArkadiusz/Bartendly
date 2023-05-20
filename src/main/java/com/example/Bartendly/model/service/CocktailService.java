@@ -59,7 +59,7 @@ public class CocktailService {
         //creating new Cocktail
         Cocktail cocktail = new Cocktail();
         cocktail.setName(cocktailDTO.name());
-        cocktail.setPrepMethod(cocktailDTO.preparationMethod());
+        cocktail.setPreparationMethod(cocktailDTO.preparationMethod());
         cocktail.setRecipe(cocktailDTO.recipe());
 
         Cocktail savedCocktail = cocktailRepository.save(cocktail);
@@ -105,7 +105,7 @@ public class CocktailService {
                 .orElseThrow(()->new EntityNotFoundException("Coctail with id: "+id+" not found"));
 
         cocktail.setName(cocktailDTO.name());
-        cocktail.setPrepMethod(cocktailDTO.preparationMethod());
+        cocktail.setPreparationMethod(cocktailDTO.preparationMethod());
         cocktail.setRecipe(cocktailDTO.recipe());
 
         cocktailAlcoholRepository.deleteByCocktail(cocktail);
@@ -178,7 +178,7 @@ public class CocktailService {
                 .map(CocktailFlavourProfile::getFlavourProfile)
                 .collect(Collectors.toList());
 
-        return new CocktailDTO(cocktail.getId(), cocktail.getName(), cocktail.getPrepMethod(), cocktail.getRecipe(),
+        return new CocktailDTO(cocktail.getId(), cocktail.getName(), cocktail.getPreparationMethod(), cocktail.getRecipe(),
                 alcohols, nonAlcoholicIngredients, flavourProfiles);
     }
 
