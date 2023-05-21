@@ -17,27 +17,27 @@ public class AlcoholController {
     private final AlcoholService alcoholService;
 
 
-    @GetMapping
+    @GetMapping//working
     public List<AlcoholDTO> findAll() {
         return alcoholService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")//working
     public AlcoholDTO findById(@PathVariable Long id) {
         return alcoholService.findById(id);
     }
 
-    @PostMapping
+    @PostMapping//working
     public ResponseEntity<AlcoholDTO> create(@RequestBody AlcoholDTO alcoholDTO) {
         return new ResponseEntity<>(alcoholService.create(alcoholDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}")//working
     public AlcoholDTO update(@PathVariable Long id, @RequestBody AlcoholDTO alcoholDTO) {
         return alcoholService.update(id, alcoholDTO);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")//working
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         alcoholService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

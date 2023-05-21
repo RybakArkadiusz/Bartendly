@@ -17,27 +17,27 @@ public class NonAlcoholicIngredientController {
     private final NonAlcoholicIngredientService nonAlcoholicIngredientService;
 
 
-    @GetMapping
+    @GetMapping//working
     public List<NonAlcoholicIngredientDTO> findAll() {
         return nonAlcoholicIngredientService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")//working
     public NonAlcoholicIngredientDTO findById(@PathVariable Long id) {
         return nonAlcoholicIngredientService.findById(id);
     }
 
-    @PostMapping
+    @PostMapping//working
     public ResponseEntity<NonAlcoholicIngredientDTO> create(@RequestBody NonAlcoholicIngredientDTO nonAlcoholicIngredientDTO) {
         return new ResponseEntity<>(nonAlcoholicIngredientService.create(nonAlcoholicIngredientDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}")//working
     public NonAlcoholicIngredientDTO update(@PathVariable Long id, @RequestBody NonAlcoholicIngredientDTO nonAlcoholicIngredientDTO) {
         return nonAlcoholicIngredientService.update(id, nonAlcoholicIngredientDTO);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")//working
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         nonAlcoholicIngredientService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

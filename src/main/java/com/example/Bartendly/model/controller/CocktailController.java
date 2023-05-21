@@ -25,12 +25,11 @@ public class CocktailController {
     private final AlcoholRepository alcoholRepository;
     private final NonAlcoholicIngredientRepository nonAlcoholicIngredientRepository;
 
-    @GetMapping("/search")
+    @GetMapping("/search")//working
     public ResponseEntity<List<CocktailDTO>> findByCriteria(
             @RequestParam(required = false) List<Long> alcohols,
             @RequestParam(required = false) List<String> flavours,
-            @RequestParam(required = false) List<Long> nonAlcoholicIngredients,
-            @RequestParam(required = false) String method) {
+            @RequestParam(required = false) List<Long> nonAlcoholicIngredients) {
 
         List<Alcohol> alcoholList = alcohols.stream()
                 .map(id -> alcoholRepository.findById(id)
@@ -46,33 +45,33 @@ public class CocktailController {
                         .orElseThrow(() -> new EntityNotFoundException("Non-Alcoholic Ingredient with id: " + id + " not found")))
                 .collect(Collectors.toList());
 
-        PreparationMethod preparationMethod = PreparationMethod.valueOf(method);
 
-        return ResponseEntity.ok(cocktailService.findCocktailsByCriteria(alcoholList, flavourList, nonAlcoholicIngredientList, preparationMethod));
+
+        return ResponseEntity.ok(cocktailService.findCocktailsByCriteria(alcoholList, flavourList, nonAlcoholicIngredientList));
     }
 
 
-    @GetMapping
+    @GetMapping//working
     public ResponseEntity<List<CocktailDTO>> findAll() {
         return ResponseEntity.ok(cocktailService.findAll());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")//working
     public ResponseEntity<CocktailDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(cocktailService.findById(id));
     }
 
-    @PostMapping
+    @PostMapping//working
     public ResponseEntity<CocktailDTO> create(@RequestBody CocktailDTO cocktailDTO) {
         return ResponseEntity.ok(cocktailService.create(cocktailDTO));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}")//working
     public ResponseEntity<CocktailDTO> update(@PathVariable Long id, @RequestBody CocktailDTO cocktailDTO) {
         return ResponseEntity.ok(cocktailService.update(id, cocktailDTO));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")//working
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         cocktailService.delete(id);
         return ResponseEntity.noContent().build();

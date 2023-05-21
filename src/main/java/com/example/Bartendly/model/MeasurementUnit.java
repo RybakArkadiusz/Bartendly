@@ -10,5 +10,6 @@ public enum MeasurementUnit {
     DASH,
     PINCH,
     CUP,
-    SHOT
+    SHOT,
+    EA
 }

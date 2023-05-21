@@ -9,6 +9,7 @@ import com.example.Bartendly.model.db.CocktailFlavourProfile;
 import com.example.Bartendly.model.db.CocktailNonAlcoholicIngredient;
 import com.example.Bartendly.model.repository.*;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 @Service
+@Transactional
 @AllArgsConstructor
 public class CocktailService {
     private final CocktailRepository cocktailRepository;
@@ -26,12 +28,12 @@ public class CocktailService {
     private final NonAlcoholicIngredientRepository nonAlcoholicIngredientRepository;
 
 
-    public List<CocktailDTO> findCocktailsByCriteria(List<Alcohol> alcohols, List<FlavourProfile> flavours, List<NonAlcoholicIngredient> nonAlcoholicIngredients, PreparationMethod method) {
-        List<Long> alcoholIds = alcohols.stream().map(Alcohol::getId).collect(Collectors.toList());
-        List<String> flavourNames = flavours.stream().map(Enum::name).collect(Collectors.toList());
-        List<Long> nonAlcoholicIngredientIds = nonAlcoholicIngredients.stream().map(NonAlcoholicIngredient::getId).collect(Collectors.toList());
+    public List<CocktailDTO> findCocktailsByCriteria(List<Alcohol> alcohols, List<FlavourProfile> flavours, List<NonAlcoholicIngredient> nonAlcoholicIngredients) {
+        List<Long> alcoholIds = alcohols != null ? alcohols.stream().map(Alcohol::getId).collect(Collectors.toList()) : null;
+        //List<String> flavourNames = flavours != null ? flavours.stream().map(Enum::name).collect(Collectors.toList()) : null;
+        List<Long> nonAlcoholicIngredientIds = nonAlcoholicIngredients != null ? nonAlcoholicIngredients.stream().map(NonAlcoholicIngredient::getId).collect(Collectors.toList()) : null;
 
-        List<Cocktail> cocktails = cocktailRepository.findCocktailsByCriteria(alcoholIds, alcoholIds.size(), flavourNames, flavourNames.size(), nonAlcoholicIngredientIds, nonAlcoholicIngredientIds.size(), method.name());
+        List<Cocktail> cocktails = cocktailRepository.findCocktailsByCriteria(alcoholIds, alcoholIds.size(), flavours, flavours.size(), nonAlcoholicIngredientIds, nonAlcoholicIngredientIds.size());
 
         return cocktails.stream()
                 .map(this::createCocktailDTO)

@@ -31,6 +31,7 @@ public class NonAlcoholicIngredientService {
     public NonAlcoholicIngredientDTO create(NonAlcoholicIngredientDTO nonAlcoholicIngredientDTO) {
         NonAlcoholicIngredient nonAlcoholicIngredient = new NonAlcoholicIngredient();
         nonAlcoholicIngredient.setName(nonAlcoholicIngredientDTO.name());
+        nonAlcoholicIngredient.setType(nonAlcoholicIngredientDTO.nonAlcoholicType());
 
         NonAlcoholicIngredient savedNonAlcoholicIngredient = nonAlcoholicIngredientRepository.save(nonAlcoholicIngredient);
 
@@ -42,6 +43,7 @@ public class NonAlcoholicIngredientService {
                 .orElseThrow(() -> new EntityNotFoundException("NonAlcoholicIngredient with id: " + id + " not found"));
 
         nonAlcoholicIngredient.setName(nonAlcoholicIngredientDTO.name());
+        nonAlcoholicIngredient.setType(nonAlcoholicIngredientDTO.nonAlcoholicType());
 
         NonAlcoholicIngredient updatedNonAlcoholicIngredient = nonAlcoholicIngredientRepository.save(nonAlcoholicIngredient);
 
