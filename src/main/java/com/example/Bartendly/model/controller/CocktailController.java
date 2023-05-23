@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,20 +32,29 @@ public class CocktailController {
             @RequestParam(required = false) List<String> flavours,
             @RequestParam(required = false) List<Long> nonAlcoholicIngredients) {
 
-        List<Alcohol> alcoholList = alcohols.stream()
-                .map(id -> alcoholRepository.findById(id)
-                        .orElseThrow(() -> new EntityNotFoundException("Alcohol with id: " + id + " not found")))
-                .collect(Collectors.toList());
+        List<Alcohol> alcoholList = new ArrayList<Alcohol>();
+        if(alcohols != null) {
+            alcoholList = alcohols.stream()
+                    .map(id -> alcoholRepository.findById(id)
+                            .orElseThrow(() -> new EntityNotFoundException("Alcohol with id: " + id + " not found")))
+                    .collect(Collectors.toList());
+        }
 
-        List<FlavourProfile> flavourList = flavours.stream()
-                .map(FlavourProfile::valueOf)
-                .collect(Collectors.toList());
+        List<FlavourProfile> flavourList = new ArrayList<FlavourProfile>();
+        if(flavours != null) {
+            flavourList = flavours.stream()
+                    .map(FlavourProfile::valueOf)
+                    .collect(Collectors.toList());
+        }
 
-        List<NonAlcoholicIngredient> nonAlcoholicIngredientList = nonAlcoholicIngredients.stream()
-                .map(id -> nonAlcoholicIngredientRepository.findById(id)
-                        .orElseThrow(() -> new EntityNotFoundException("Non-Alcoholic Ingredient with id: " + id + " not found")))
-                .collect(Collectors.toList());
 
+        List<NonAlcoholicIngredient> nonAlcoholicIngredientList = null;
+        if(nonAlcoholicIngredients !=null) {
+            nonAlcoholicIngredientList = nonAlcoholicIngredients.stream()
+                    .map(id -> nonAlcoholicIngredientRepository.findById(id)
+                            .orElseThrow(() -> new EntityNotFoundException("Non-Alcoholic Ingredient with id: " + id + " not found")))
+                    .collect(Collectors.toList());
+        }
 
 
         return ResponseEntity.ok(cocktailService.findCocktailsByCriteria(alcoholList, flavourList, nonAlcoholicIngredientList));

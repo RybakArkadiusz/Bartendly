@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,9 +30,11 @@ public class CocktailService {
 
 
     public List<CocktailDTO> findCocktailsByCriteria(List<Alcohol> alcohols, List<FlavourProfile> flavours, List<NonAlcoholicIngredient> nonAlcoholicIngredients) {
-        List<Long> alcoholIds = alcohols != null ? alcohols.stream().map(Alcohol::getId).collect(Collectors.toList()) : null;
+        List<Long> alcoholIds = alcohols != null ? alcohols.stream().map(Alcohol::getId).collect(Collectors.toList()) : new ArrayList<Long>();
         //List<String> flavourNames = flavours != null ? flavours.stream().map(Enum::name).collect(Collectors.toList()) : null;
-        List<Long> nonAlcoholicIngredientIds = nonAlcoholicIngredients != null ? nonAlcoholicIngredients.stream().map(NonAlcoholicIngredient::getId).collect(Collectors.toList()) : null;
+        List<Long> nonAlcoholicIngredientIds = nonAlcoholicIngredients != null ? nonAlcoholicIngredients.stream().map(NonAlcoholicIngredient::getId).collect(Collectors.toList()) : new ArrayList<Long>();
+
+
 
         List<Cocktail> cocktails = cocktailRepository.findCocktailsByCriteria(alcoholIds, alcoholIds.size(), flavours, flavours.size(), nonAlcoholicIngredientIds, nonAlcoholicIngredientIds.size());
 
