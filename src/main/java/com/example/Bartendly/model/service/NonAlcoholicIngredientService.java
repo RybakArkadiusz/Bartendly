@@ -1,5 +1,6 @@
 package com.example.Bartendly.model.service;
 
+import com.example.Bartendly.model.Alcohol;
 import com.example.Bartendly.model.DTO.NonAlcoholicIngredientDTO;
 import com.example.Bartendly.model.NonAlcoholicIngredient;
 import com.example.Bartendly.model.repository.NonAlcoholicIngredientRepository;
@@ -51,7 +52,10 @@ public class NonAlcoholicIngredientService {
     }
 
     public void delete(Long id) {
-        nonAlcoholicIngredientRepository.deleteById(id);
+        NonAlcoholicIngredient nonAlcoholicIngredient = nonAlcoholicIngredientRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Non alcoholic ingredient with id: " + id + " not found"));
+
+        nonAlcoholicIngredientRepository.delete(nonAlcoholicIngredient);
     }
 
     private NonAlcoholicIngredientDTO createNonAlcoholicIngredientDTO(NonAlcoholicIngredient nonAlcoholicIngredient) {
