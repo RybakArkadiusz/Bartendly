@@ -55,9 +55,21 @@ public class CocktailController {
                             .orElseThrow(() -> new EntityNotFoundException("Non-Alcoholic Ingredient with id: " + id + " not found")))
                     .collect(Collectors.toList());
         }
+        
+        List<CocktailDTO> cocktails = cocktailService.findCocktailsByCriteria(alcoholList, flavourList, nonAlcoholicIngredientList);
+        List<CocktailDTO> cocktails1 = new ArrayList<>();
+        List<CocktailDTO> cocktails2 = new ArrayList<>();
 
+        for (CocktailDTO c:cocktails) {
+            if(c.flavourProfiles().size()==flavours.size()){
+                cocktails1.add(c);
+            }else {
+                cocktails2.add(c);
+            }
 
-        return ResponseEntity.ok(cocktailService.findCocktailsByCriteria(alcoholList, flavourList, nonAlcoholicIngredientList));
+        }
+        cocktails1.addAll(cocktails2);
+        return ResponseEntity.ok(cocktails1);
     }
 
 
